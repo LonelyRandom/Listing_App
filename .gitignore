@@ -19,5 +19,5 @@ main.py
 token.pickle
 
 # Streamlit secrets
-.streamlit/secrets.toml
-.streamlit/client_secrets.json
+secrets.toml
+client_secrets.json
