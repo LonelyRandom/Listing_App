@@ -7,7 +7,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 from io import StringIO
 import datetime
 import re
-from StreamlitApp.upload_image import up_to_drive
+from upload_image import up_to_drive
 
 if "page" not in st.session_state:
     st.session_state.page = "Home"
