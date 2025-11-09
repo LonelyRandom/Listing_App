@@ -33,28 +33,27 @@ def find_file_in_drive(file_name, folder_id=None):
     files = results.get('files', [])
     return files  # list of dict: [{'id': '...', 'name': '...', 'webViewLink': '...'}]
 
-
-# Fungsi autentikasi
+# Funsi Autentikasi
 def authenticate():
-    # Ambil service account JSON dari Streamlit Secrets
-    key_dict = {
-        "type": st.secrets["google_drive"]["type"],
-        "project_id": st.secrets["google_drive"]["project_id"],
-        "private_key_id": st.secrets["google_drive"]["private_key_id"],
-        "private_key": st.secrets["google_drive"]["private_key"],
-        "client_email": st.secrets["google_drive"]["client_email"],
-        "client_id": st.secrets["google_drive"]["client_id"],
-        "auth_uri": st.secrets["google_drive"]["auth_uri"],
-        "token_uri": st.secrets["google_drive"]["token_uri"],
-        "auth_provider_x509_cert_url": st.secrets["google_drive"]["auth_provider_x509_cert_url"],
-        "client_x509_cert_url": st.secrets["google_drive"]["client_x509_cert_url"]
-    }
-    creds = service_account.Credentials.from_service_account_info(key_dict, scopes=SCOPES)
-    
-    # Bangun service Google Drive
+    client_secrets = json.loads(st.secrets["google_oauth"]["client_secrets"])
+
+    # Buat Flow dari client_secrets
+    flow = Flow.from_client_config(
+        client_config=client_secrets,
+        scopes=SCOPES,
+        redirect_uri="https://listing-app.streamlit.app/.streamlit/oauth2/callback"
+    )
+
+    # Jika belum ada token di session_state, redirect user ke Google login
+    if "credentials" not in st.session_state:
+        auth_url, _ = flow.authorization_url(prompt='consent')
+        st.write(f"[Login to Google]({auth_url})")
+        st.stop()
+
+    # Jika ada token
+    creds = Credentials(**st.session_state["credentials"])
     service = build('drive', 'v3', credentials=creds)
     return service
-
 
 # Upload file lokal
 def upload_file_to_drive(file_path, folder_id=None):
