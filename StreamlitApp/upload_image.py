@@ -36,7 +36,18 @@ def find_file_in_drive(file_name, folder_id=None):
 # Fungsi autentikasi
 def authenticate():
     # Ambil service account JSON dari Streamlit Secrets
-    key_dict = json.loads(st.secrets["google_drive"]["service_accountJson"])
+    key_dict = {
+        "type": st.secrets["google_drive"]["type"],
+        "project_id": st.secrets["google_drive"]["project_id"],
+        "private_key_id": st.secrets["google_drive"]["private_key_id"],
+        "private_key": st.secrets["google_drive"]["private_key"],
+        "client_email": st.secrets["google_drive"]["client_email"],
+        "client_id": st.secrets["google_drive"]["client_id"],
+        "auth_uri": st.secrets["google_drive"]["auth_uri"],
+        "token_uri": st.secrets["google_drive"]["token_uri"],
+        "auth_provider_x509_cert_url": st.secrets["google_drive"]["auth_provider_x509_cert_url"],
+        "client_x509_cert_url": st.secrets["google_drive"]["client_x509_cert_url"]
+    }
     creds = service_account.Credentials.from_service_account_info(key_dict, scopes=SCOPES)
     
     # Bangun service Google Drive
