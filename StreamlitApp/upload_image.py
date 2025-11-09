@@ -36,6 +36,7 @@ def find_file_in_drive(file_name, folder_id=None):
 # Fungsi autentikasi
 def authenticate():
     # Ambil service account JSON dari Streamlit Secrets
+    st.text(st.secrets["google_drive"]["service_account_json"][:200])
     key_dict = json.loads(st.secrets["google_drive"]["service_account_json"])
     creds = service_account.Credentials.from_service_account_info(key_dict, scopes=SCOPES)
     
