@@ -35,19 +35,25 @@ def find_file_in_drive(file_name, folder_id=None):
 # Fungsi autentikasi
 def authenticate():
     creds = None
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
+
+    # Cek token yang tersimpan di Streamlit session_state (in-memory)
+    if 'token' in st.session_state:
+        creds = st.session_state['token']
+
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                './.streamlit/client_secrets.json', SCOPES)
+            # Ambil client_secrets dari Streamlit secrets
+            client_secrets_json = st.secrets["google_drive"]["client_secrets_json"]
+            client_config = json.loads(client_secrets_json)
+
+            flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
             creds = flow.run_local_server(port=0)
-        # simpan token untuk pemakaian berikutnya
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+
+        # Simpan token di session_state supaya bisa reuse selama runtime
+        st.session_state['token'] = creds
+
     service = build('drive', 'v3', credentials=creds)
     return service
 
