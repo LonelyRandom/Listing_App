@@ -50,13 +50,14 @@ def authenticate():
             client_config = json.loads(client_secrets_json)
 
             flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
-            creds = flow.run_local_server(port=0)
+            creds = flow.run_console()  # Ganti dengan run_console()
 
         # Simpan token di session_state supaya bisa reuse selama runtime
         st.session_state['token'] = creds
 
     service = build('drive', 'v3', credentials=creds)
     return service
+
 
 # Upload file lokal
 def upload_file_to_drive(file_path, folder_id=None):
