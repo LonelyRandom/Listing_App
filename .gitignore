@@ -16,7 +16,7 @@ test_*.py
 main.py
 
 # Credentials or tokens
-.streamlit/token.pickle
+token.pickle
 
 # Streamlit secrets
 .streamlit/secrets.toml
