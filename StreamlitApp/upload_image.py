@@ -35,26 +35,11 @@ def find_file_in_drive(file_name, folder_id=None):
 
 # Fungsi autentikasi
 def authenticate():
-    creds = None
-
-    # Cek token yang tersimpan di Streamlit session_state (in-memory)
-    if 'token' in st.session_state:
-        creds = st.session_state['token']
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            # Ambil client_secrets dari Streamlit secrets
-            client_secrets_json = st.secrets["google_drive"]["client_secrets_json"]
-            client_config = json.loads(client_secrets_json)
-
-            flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
-            creds = flow.run_console()  # Ganti dengan run_console()
-
-        # Simpan token di session_state supaya bisa reuse selama runtime
-        st.session_state['token'] = creds
-
+    # Ambil service account JSON dari Streamlit Secrets
+    key_dict = json.loads(st.secrets["google_drive"]["service_account_json"])
+    creds = service_account.Credentials.from_service_account_info(key_dict, scopes=SCOPES)
+    
+    # Bangun service Google Drive
     service = build('drive', 'v3', credentials=creds)
     return service
 
