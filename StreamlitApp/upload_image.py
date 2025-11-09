@@ -42,7 +42,7 @@ def authenticate():
     flow = Flow.from_client_config(
         client_config=client_secrets,
         scopes=SCOPES,
-        redirect_uri="https://listing-app.streamlit.app/.streamlit/oauth2/callback"
+        redirect_uri="https://listing-app.streamlit.app/"
     )
 
     # Jika belum ada token di session_state, redirect user ke Google login
