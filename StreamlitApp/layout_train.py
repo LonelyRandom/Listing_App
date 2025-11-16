@@ -732,7 +732,7 @@ elif st.session_state.page == 'Edit':
             st.session_state.page = st.session_state.back
             st.rerun()
 
-        if pd.isna(update_df['Name (Kanji)'].iloc[0):
+        if pd.isna(update_df['Name (Kanji)'].iloc[0]):
             kanji = "None"
         else:
             kanji = update_df['Name (Kanji)'].iloc[0]
