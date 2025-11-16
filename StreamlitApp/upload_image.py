@@ -38,3 +38,15 @@ def delete_cloudinary_image(public_id):
     except Exception as e:
         st.error(f"❌ Error hapus gambar: {e}")
         return False
+
+def rename_cloudinary_image(old_public_id, new_public_id):
+    try:        
+        # Rename di Cloudinary
+        result = cloudinary.uploader.rename(
+            old_public_id,
+            new_public_id
+        )
+        image_url = result['secure_url']
+        return image_url
+    except Exception as e:
+        return str(e)
