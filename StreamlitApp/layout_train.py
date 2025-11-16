@@ -48,7 +48,7 @@ def load_gsheet_data(username):
         List = conn.read(worksheet="VList", usecols=list(range(4)))
     return List
 
-@st.cache_data(ttl=600)
+@ st.cache_resource
 def connection():
     conn = st.connection('gsheets', type=GSheetsConnection)
     return conn
