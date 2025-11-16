@@ -679,10 +679,10 @@ elif st.session_state.page == 'Home':
                                             delete_df = existing_data[existing_data['Name (Alphabet)'] != selected['Name (Alphabet)'].iloc[0]]
                                         
                                         # Update Google Sheets
-                                        conn.update(worksheet='NList', data=delete_df)
-                                        
-                                        # Update session state
-                                        st.session_state.existing_data = delete_df
+                                        if usn == n_usn:
+                                            conn.update(worksheet='NList', data=delete_df)
+                                        else:    
+                                            conn.update(worksheet='VList', data=delete_df)
                                         
                                         st.success("✅ Data berhasil dihapus!")
                                         # Reset state dan clear cache
