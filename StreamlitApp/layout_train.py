@@ -928,7 +928,10 @@ elif st.session_state.page == 'Edit':
                     # Hapus extension .png
                     name_without_extension = filename.split('.')[0]
 
-                    st.write(name_without_extension, clean_name)
+                    st.write("Old Picture Name: ",name_without_extension)
+                    st.write("New Name: ", clean_name)
+                    st.write("Link Old: ", old_pic)
+                    st.stop()
 
 
                     if new_pic is not None:
