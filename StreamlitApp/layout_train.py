@@ -732,10 +732,10 @@ elif st.session_state.page == 'Edit':
             st.session_state.page = st.session_state.back
             st.rerun()
 
-        if pd.isna(update_df['Name (Kanji)'].iloc[0]):
+        if pd.isna(update_df['Name (Kanji)']):
             kanji = "None"
         else:
-            kanji = update_df['Name (Kanji)'].iloc[0]
+            kanji = update_df['Name (Kanji)']
 
         st.write(kanji)
         st.subheader(update_df['Name (Alphabet)'] + " (" + kanji + ") ")
