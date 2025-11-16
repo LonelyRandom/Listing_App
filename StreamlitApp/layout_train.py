@@ -956,14 +956,13 @@ elif st.session_state.page == 'Edit':
                     delete_cloudinary_image(clean_name)
                     link = upload_to_database(new_pic, clean_name)
                     test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Picture"] = link
-
-            test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Status"] = status_type
-            test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Name (Kanji)"] = name_kanji
-            test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Name (Alphabet)"] = name_alpha
-
-            conn.update(worksheet='VList', data=test)
-            st.session_state.page = 'Home'
-            reset_cache()
+                test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Status"] = status_type
+                test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Name (Kanji)"] = name_kanji
+                test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Name (Alphabet)"] = name_alpha
+                
+                conn.update(worksheet='VList', data=test)
+                st.session_state.page = 'Home'
+                reset_cache()
 
 
 
