@@ -929,7 +929,7 @@ elif st.session_state.page == 'Edit':
                     name_without_extension = filename.split('.')[0]
 
                     if new_pic is not None:
-                        delete_cloudinary_image(clean_name)
+                        delete_cloudinary_image(name_without_extension)
                         link = upload_to_database(new_pic, clean_name)
                         test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
                     else:
