@@ -466,6 +466,10 @@ elif st.session_state.page == 'Home':
                     else:
                         st.sidebar.write('image Kosong')
                         link = "https://res.cloudinary.com/devooeuej/image/upload/v1763219184/Placeholder.png"
+
+                    if name_kanji == '' or name_kanji == None:
+                        name_kanji = ""
+                        
                     new_data = pd.DataFrame(
                         [
                             {
