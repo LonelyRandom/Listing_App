@@ -928,6 +928,8 @@ elif st.session_state.page == 'Edit':
                     # Hapus extension .png
                     name_without_extension = filename.split('.')[0]
 
+                    st.write(name_without_extension, clean_name)
+
 
                     if new_pic is not None:
                         delete_cloudinary_image(clean_name)
