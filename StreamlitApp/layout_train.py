@@ -945,6 +945,9 @@ elif st.session_state.page == 'Edit':
                         delete_cloudinary_image(name_without_extension)
                         link = upload_to_database(new_pic, clean_name)
                         test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
+                    elif new_pic is not None and name_without_extension == "Placeholder":
+                        link = upload_to_database(new_pic, clean_name)
+                        test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
                     else:
                         if name_without_extension != 'Placeholder' and name_without_extension != clean_name:
                             link = rename_cloudinary_image(name_without_extension, clean_name)
@@ -988,6 +991,9 @@ elif st.session_state.page == 'Edit':
                 st.write(name_without_extension, clean_name)
                 if new_pic is not None and name_without_extension != "Placeholder":
                     delete_cloudinary_image(clean_name)
+                    link = upload_to_database(new_pic, clean_name)
+                    test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Picture"] = link
+                elif new_pic is not None and name_without_extension == "Placeholder":
                     link = upload_to_database(new_pic, clean_name)
                     test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Picture"] = link
                 else:
