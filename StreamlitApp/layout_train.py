@@ -936,8 +936,9 @@ elif st.session_state.page == 'Edit':
                         link = upload_to_database(new_pic, clean_name)
                         test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
                     else:
-                        link = rename_cloudinary_image(name_without_extension, clean_name)
-                        test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
+                        # link = rename_cloudinary_image(name_without_extension, clean_name)
+                        # test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
+                        st.write("hello")
 
                     test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Name (Alphabet)"] = name_alpha
                     test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Review"] = review_type
