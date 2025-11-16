@@ -17,16 +17,18 @@ n_usn = st.secrets.username.N_USN
 if "page" not in st.session_state:
     st.session_state.page = "Login"
 
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
 def reset_cache():
     # Clear semua cache
     st.cache_data.clear()
     # Clear session state
-    for key in ['existing_data', 'conn', 'all_images']:
-        if key in st.session_state:
-            del st.session_state[key]
-
+    keys_to_keep = ['logged_in','page','usn','log_in','conn']
+    keys_to_delete = [key for key in st.session_state.keys() if key not in keys_to_keep]
     
-    st.session_state.page = 'Home'
+    for key in keys_to_delete:
+        del st.session_state[key]
     st.rerun()
 
 st.set_page_config(layout="wide")
@@ -135,13 +137,13 @@ if st.session_state.page != "Login":
         for key in ['existing_data', 'conn', 'all_images']:
             if key in st.session_state:
                 del st.session_state[key]
-
+        st.session_state.logged_in = False
         st.rerun()
 
 # ===============================
 # LOGIN
 # ===============================
-if st.session_state.page == 'Login':
+if st.session_state.page == 'Login' and not st.session_state.logged_in:
     left,mid,right = st.columns([1.5,1,1.5])
     with mid:
         st.title("Login")
@@ -169,7 +171,7 @@ if st.session_state.page == 'Login':
 # ===============================
 # HOME
 # ===============================
-elif st.session_state.page == 'Home':
+elif st.session_state.logged_in and st.session_state.page == 'Home':
     # Load data once and store it in session state
     conn = st.session_state.conn
     usn = st.session_state.usn
@@ -704,7 +706,7 @@ elif st.session_state.page == 'Home':
 # =================
 #  EDIT PAGE
 # =================
-elif st.session_state.page == 'Edit':
+elif st.session_state.logged_in and st.session_state.page == 'Edit':
     # Load data once and store it in session state
     usn = st.session_state.usn
     if 'existing_data' not in st.session_state:
