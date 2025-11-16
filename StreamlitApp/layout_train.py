@@ -959,14 +959,27 @@ elif st.session_state.page == 'Edit':
             if st.button("Done"):
                 conn = st.session_state.conn
                 test = existing_data.copy()
-                join_name = update_df['Name (Alphabet)']  # ⬅️ Tambah .iloc[0]
+                join_name = name_alpha  # ⬅️ Tambah .iloc[0]
                 clean_name = re.sub(r'[^\w]','',join_name)
                 clean_name = "V" + clean_name
-                
+
+                old_pic = update_df['Picture']
+
+                # Ambil bagian terakhir setelah split '/'
+                filename = old_pic.split('/')[-1]
+
+                # Hapus extension .png
+                name_without_extension = filename.split('.')[0]
+
+                st.write(name_without_extension, clean_name)
                 if new_pic is not None:
                     delete_cloudinary_image(clean_name)
                     link = upload_to_database(new_pic, clean_name)
                     test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Picture"] = link
+                else:
+                    link = rename_cloudinary_image(name_without_extension, clean_name)
+                    test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Picture"] = link
+                    
                 test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Status"] = status_type
                 test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Name (Kanji)"] = name_kanji
                 test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Name (Alphabet)"] = name_alpha
