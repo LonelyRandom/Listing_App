@@ -190,7 +190,7 @@ elif st.session_state.page == 'Home':
 
     picture = st.sidebar.file_uploader("Upload Picture", type=["jpg", "jpeg", "png"])
     if picture is not None:
-        st.sidebar.image(picture, width=200)
+        st.sidebar.image(picture, width=100)
 
     if usn == n_usn:
         review = st.sidebar.selectbox(
@@ -335,7 +335,6 @@ elif st.session_state.page == 'Home':
                     clean_name = "N"+clean_name
                     
                     if picture is not None:
-                        # st.image(picture)
                         link = upload_to_database(picture, clean_name)
                     else:
                         link = "https://res.cloudinary.com/devooeuej/image/upload/v1763268710/Placeholder.png"
@@ -419,7 +418,6 @@ elif st.session_state.page == 'Home':
                 clean_name = "N"+clean_name
                 
                 if picture is not None:
-                    # st.image(picture)
                     link = upload_to_database(picture, clean_name)
                 else:
                     link = "https://res.cloudinary.com/devooeuej/image/upload/v1763268710/Placeholder.png"
@@ -461,10 +459,8 @@ elif st.session_state.page == 'Home':
                     clean_name = "V"+clean_name
                     
                     if picture is not None:
-                        # st.image(picture)
                         link = upload_to_database(picture, clean_name)
                     else:
-                        st.sidebar.write('image Kosong')
                         link = "https://res.cloudinary.com/devooeuej/image/upload/v1763268710/Placeholder.png"
 
                     if name_kanji == '' or name_kanji == None:
@@ -491,7 +487,6 @@ elif st.session_state.page == 'Home':
                 clean_name = "V"+clean_name
                 
                 if picture is not None:
-                    # st.image(picture)
                     link = upload_to_database(picture, clean_name)
                 else:
                     st.sidebar.write('image Kosong')
@@ -601,7 +596,7 @@ elif st.session_state.page == 'Home':
                 picture_content = st.session_state.all_images.get(selected_name)
                 with sub_col2:
                     if picture:
-                        st.image(picture, width=300)
+                        st.image(picture, width=150)
                     else:
                         st.write("No picture available.")
 
@@ -742,14 +737,14 @@ elif st.session_state.page == 'Edit':
         if pd.notna(update_df['Picture']):
             image_content = fetch_image(update_df['Picture'])
             if image_content:
-                st.image(image_content, width=300)
+                st.image(image_content, width=150)
         else:
             st.write("No picture available.")
 
         # 1. INPUT IMAGE
         new_pic = st.file_uploader("Change Image", type=['png', 'jpg', 'jpeg'])
         if new_pic is not None:
-            st.image(new_pic)
+            st.image(new_pic, width = 150)
 
     with mid:
         if usn == n_usn:
