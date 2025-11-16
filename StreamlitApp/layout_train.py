@@ -761,7 +761,11 @@ elif st.session_state.page == 'Edit':
         name_alpha = st.text_input(label="Nama (Alphabet)", value=update_df['Name (Alphabet)'])
 
         # 4. INPUT NAME (KANJI)
-        name_kanji = st.text_input(label="Name (Kanji)", value=update_df['Name (Kanji)'])
+        if pd.isna(update_df['Name (Kanji)']):
+            namek = ''
+        else:
+            namek = update_df['Name (Kanji)']
+        name_kanji = st.text_input(label="Name (Kanji)", value=namek)
 
         if usn == n_usn:
             # 5. INPUT BIRTHDATE
