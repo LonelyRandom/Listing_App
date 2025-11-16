@@ -7,7 +7,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 from io import StringIO
 import datetime
 import re
-from upload_image import upload_to_database,delete_cloudinary_image
+from upload_image import upload_to_database,delete_cloudinary_image, rename_cloudinary_image
 from datetime import date
 
 
@@ -920,9 +920,21 @@ elif st.session_state.page == 'Edit':
                     clean_name = re.sub(r'[^\w]','',join_name)
                     clean_name = "N" + clean_name
 
+                    old_pic = update_df['Picture']
+
+                    # Ambil bagian terakhir setelah split '/'
+                    filename = old_pic.split('/')[-1]
+
+                    # Hapus extension .png
+                    name_without_extension = filename.split('.')[0]
+
+
                     if new_pic is not None:
                         delete_cloudinary_image(clean_name)
                         link = upload_to_database(new_pic, clean_name)
+                        test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
+                    else:
+                        link = rename_cloudinary_image(name_without_extension, clean_name)
                         test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
 
                     test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Name (Alphabet)"] = name_alpha
