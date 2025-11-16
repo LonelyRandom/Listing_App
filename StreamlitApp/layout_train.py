@@ -916,7 +916,7 @@ elif st.session_state.page == 'Edit':
                         else:
                             debut = f"{period_year} Year {period_month} Month"
                 
-                    join_name = update_df['Name (Alphabet)']  # ⬅️ Tambah .iloc[0]
+                    join_name = name_alpha
                     clean_name = re.sub(r'[^\w]','',join_name)
                     clean_name = "N" + clean_name
 
