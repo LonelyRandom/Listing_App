@@ -338,7 +338,7 @@ elif st.session_state.page == 'Home':
                         # st.image(picture)
                         link = upload_to_database(picture, clean_name)
                     else:
-                        link = "https://res.cloudinary.com/devooeuej/image/upload/v1763219184/Placeholder.png"
+                        link = "https://res.cloudinary.com/devooeuej/image/upload/v1763268710/Placeholder.png"
 
                     new_data = pd.DataFrame(
                         [
@@ -422,7 +422,7 @@ elif st.session_state.page == 'Home':
                     # st.image(picture)
                     link = upload_to_database(picture, clean_name)
                 else:
-                    link = "https://res.cloudinary.com/devooeuej/image/upload/v1763219184/Placeholder.png"
+                    link = "https://res.cloudinary.com/devooeuej/image/upload/v1763268710/Placeholder.png"
 
                 new_data = pd.DataFrame(
                     [
@@ -465,7 +465,7 @@ elif st.session_state.page == 'Home':
                         link = upload_to_database(picture, clean_name)
                     else:
                         st.sidebar.write('image Kosong')
-                        link = "https://res.cloudinary.com/devooeuej/image/upload/v1763219184/Placeholder.png"
+                        link = "https://res.cloudinary.com/devooeuej/image/upload/v1763268710/Placeholder.png"
 
                     if name_kanji == '' or name_kanji == None:
                         name_kanji = ""
@@ -495,7 +495,7 @@ elif st.session_state.page == 'Home':
                     link = upload_to_database(picture, clean_name)
                 else:
                     st.sidebar.write('image Kosong')
-                    link = "https://res.cloudinary.com/devooeuej/image/upload/v1763219184/Placeholder.png"
+                    link = "https://res.cloudinary.com/devooeuej/image/upload/v1763268710/Placeholder.png"
 
                 if name_kanji == '' or name_kanji == None:
                     name_kanji = ""
