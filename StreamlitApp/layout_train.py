@@ -194,14 +194,14 @@ elif st.session_state.page == 'Home':
 
     if usn == n_usn:
         review = st.sidebar.selectbox(
-            "Review",
+            "Review *",
             options=REVIEW_OPTS,
             index=None
         )
 
-    name_alpha = st.sidebar.text_input("Name (Alphabet)")
+    name_alpha = st.sidebar.text_input("Name (Alphabet) *")
 
-    name_kanji = st.sidebar.text_input("Name (Kanji)")
+    name_kanji = st.sidebar.text_input("Name (Kanji) *")
 
     if usn == n_usn:
         birthdate = st.sidebar.date_input(
@@ -226,7 +226,7 @@ elif st.session_state.page == 'Home':
             formatted_debutDate = debut_date.strftime("%d/%m/%Y")
 
         size = st.sidebar.selectbox(
-            "Size",
+            "Size *",
             options=SIZE_OPTS,
             index=None
         )
@@ -250,14 +250,14 @@ elif st.session_state.page == 'Home':
         notes = st.sidebar.text_area("Notes")
 
         status = st.sidebar.selectbox(
-            "Status",
+            "Status *",
             options=STATUS_OPTS,
             index=None
         )
         
         if status == "Retired":
             retired_date = st.sidebar.date_input(
-                "Retired Date",
+                "Retired Date *",
                 value = datetime.date.today()
             )
             formatted_retire = retired_date.strftime("%d/%m/%Y")
@@ -266,7 +266,7 @@ elif st.session_state.page == 'Home':
     
     if usn == v_usn:
         info = st.sidebar.selectbox(
-            "Status",
+            "Status *",
             options = INFO,
             index=None
         )
