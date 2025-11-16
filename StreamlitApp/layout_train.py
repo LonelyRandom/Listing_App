@@ -731,6 +731,9 @@ elif st.session_state.page == 'Edit':
         if st.button("Back"):
             st.session_state.page = st.session_state.back
             st.rerun()
+
+        if update_df['Name (Kanji)'] == None or update_df['Name (Kanji)'] == "":
+            update_df['Name (Kanji)'].astype("object")
         st.subheader(update_df['Name (Alphabet)'] + " (" + update_df['Name (Kanji)'] + ") ")
         if pd.notna(update_df['Picture']):
             image_content = fetch_image(update_df['Picture'])
