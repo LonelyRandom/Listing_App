@@ -941,7 +941,7 @@ elif st.session_state.page == 'Edit':
                     # Hapus extension .png
                     name_without_extension = filename.split('.')[0]
 
-                    if new_pic is not None:
+                    if new_pic is not None and name_without_extension != "Placeholder":
                         delete_cloudinary_image(name_without_extension)
                         link = upload_to_database(new_pic, clean_name)
                         test.loc[test["Name (Kanji)"] == update_df["Name (Kanji)"], "Picture"] = link
@@ -986,7 +986,7 @@ elif st.session_state.page == 'Edit':
                 name_without_extension = filename.split('.')[0]
 
                 st.write(name_without_extension, clean_name)
-                if new_pic is not None:
+                if new_pic is not None and name_without_extension != "Placeholder":
                     delete_cloudinary_image(clean_name)
                     link = upload_to_database(new_pic, clean_name)
                     test.loc[test["Name (Alphabet)"] == update_df["Name (Alphabet)"], "Picture"] = link
