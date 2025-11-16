@@ -34,7 +34,7 @@ def delete_cloudinary_image(public_id):
             return True
         else:
             st.warning(f"⚠️ Gagal hapus gambar: {result.get('result')}")
-            return False
+            return True
     except Exception as e:
         st.error(f"❌ Error hapus gambar: {e}")
         return False
