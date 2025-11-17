@@ -149,10 +149,10 @@ if st.session_state.page == 'Login':
 
         if st.button("Login"):
             # Load data once and store it in session state
-            user = login_data[login_data["username"] == username]
+            user = login_data[login_data["Username"] == username]
 
             if not user.empty:
-                stored_password = user["password"].iloc[0]
+                stored_password = user["Password"].iloc[0]
 
                 if password == stored_password:
                     st.session_state.logged_in = True
