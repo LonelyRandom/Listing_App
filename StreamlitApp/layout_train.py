@@ -186,6 +186,16 @@ elif st.session_state.page == 'Home':
     # =======================
     
     st.sidebar.header("📋 Input Actress Data")
+    # Tambahkan navigasi di sidebar
+    if usn == n_usn:
+        st.sidebar.title("Navigation")
+        if st.sidebar.button("📋 Manage Data"):
+            st.session_state.page = "Home"
+            st.rerun()
+        
+        if st.sidebar.button("👩‍🎤 View Gallery"):
+            st.session_state.page = "Gallery"
+            st.rerun()
 
     picture = st.sidebar.file_uploader("Upload Picture", type=["jpg", "jpeg", "png"])
     if picture is not None:
@@ -1008,7 +1018,373 @@ elif st.session_state.page == 'Edit':
                 st.session_state.page = 'Home'
                 reset_cache()
 
+elif st.session_state.page == 'Gallery':
+    st.markdown("<h1 style='text-align: center; margin-bottom: 30px;'>Actress List 😊</h1>", unsafe_allow_html=True)
+    st.set_page_config(layout="wide")
 
+    left, mid, right = st.columns([.3, 2, .3])
+
+    # Koneksi ke Google Sheets - baca semua kolom
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    List = conn.read(worksheet="NList", usecols=list(range(14)))
+
+    # Ambil semua kolom sesuai field yang dipakai
+    pics = List['Picture'].dropna().tolist()
+    name = List['Name (Alphabet)'].dropna().tolist()
+    kanji = List['Name (Kanji)'].dropna().tolist()
+
+    # Ambil kolom lainnya dengan nama yang tepat
+    review = List['Review'].dropna().tolist() if 'Review' in List.columns else [""] * len(pics)
+    birthdate = List['Birthdate'].dropna().tolist() if 'Birthdate' in List.columns else [""] * len(pics)
+    debut_date = List['Debut Date'].dropna().tolist() if 'Debut Date' in List.columns else [""] * len(pics)
+    size = List['Size'].dropna().tolist() if 'Size' in List.columns else [""] * len(pics)
+    measurement = List['Measurement'].dropna().tolist() if 'Measurement' in List.columns else [""] * len(pics)
+    height = List['Height (cm)'].dropna().tolist() if 'Height (cm)' in List.columns else [""] * len(pics)
+    notes = List['Notes'].dropna().tolist() if 'Notes' in List.columns else [""] * len(pics)
+    age = List['Age'].dropna().tolist() if 'Age' in List.columns else [""] * len(pics)
+    debut_period = List['Debut Period'].dropna().tolist() if 'Debut Period' in List.columns else [""] * len(pics)
+    retire_date = List['Retire Date'].dropna().tolist() if 'Retire Date' in List.columns else [""] * len(pics)
+    status = List['Status'].dropna().tolist() if 'Status' in List.columns else ["Active"] * len(pics)
+
+    count = len(pics)
+    N_PICS = count
+
+
+    # Langsung gunakan list pics sebagai sumber gambar
+    if "pics" not in st.session_state:
+        st.session_state.pics = pics
+    if "name" not in st.session_state:
+        st.session_state.name = name
+    if "kanji" not in st.session_state:
+        st.session_state.kanji = kanji
+
+    # Simpan semua data kolom di session state
+    if "all_data" not in st.session_state:
+        st.session_state.all_data = {
+            'birthdate': birthdate,
+            'debut_date': debut_date,
+            'size': size,
+            'measurement': measurement,
+            'height': height,
+            'notes': notes,
+            'age': age,
+            'debut_period': debut_period,
+            'retire_date': retire_date,
+            'status': status,
+            'review' : review
+        }
+
+    # Fungsi untuk menghitung usia berdasarkan birthdate
+    def calculate_age(birthdate_str):
+        try:
+            birth_date = datetime.strptime(birthdate_str, '%B %d, %Y')
+            today = datetime.now()
+            age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+            return age
+        except:
+            return None
+
+    # Dialog untuk menampilkan detail lengkap
+    @st.dialog("🎬 Actress Details", width="medium")
+    def show_actress_details(index):
+        cat_url = st.session_state.pics[index]
+        name_text = st.session_state.name[index] if index < len(st.session_state.name) else ""
+        kanji_text = st.session_state.kanji[index] if index < len(st.session_state.kanji) else ""
+        
+        # Layout utama dengan gambar dan info dasar
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            st.image(cat_url, width=200)
+            st.markdown(f"### {name_text}")
+            st.markdown(f"# {kanji_text}")
+            
+        
+        with col2:
+            # Info dasar dalam metrics
+            st.markdown("### Basic Information")
+            
+            info_col1, info_col2 = st.columns(2)
+            
+            with info_col1:
+                # Age
+                age_text = st.session_state.all_data['age'][index] if index < len(st.session_state.all_data['age']) else ""
+                if not age_text and index < len(st.session_state.all_data['birthdate']):
+                    # Calculate age from birthdate jika age tidak ada
+                    calculated_age = calculate_age(st.session_state.all_data['birthdate'][index])
+                    if calculated_age:
+                        age_text = f"{calculated_age}"
+                
+                if age_text:
+                    st.metric("Age", f"{age_text} years")
+                
+                # Birthdate
+                if index < len(st.session_state.all_data['birthdate']):
+                    st.metric("Birthdate", st.session_state.all_data['birthdate'][index] or "N/A")
+                
+                # Height
+                if index < len(st.session_state.all_data['height']):
+                    st.metric("Height", st.session_state.all_data['height'][index] or "N/A")
+            
+            with info_col2:
+                
+                # Size
+                if index < len(st.session_state.all_data['size']):
+                    st.metric("Size", st.session_state.all_data['size'][index] or "N/A")
+                
+                # Review
+                if index < len(st.session_state.all_data['review']):
+                    st.metric("Review", st.session_state.all_data['review'][index] or "N/A")
+
+                # Status dengan badge warna
+                status_text = st.session_state.all_data['status'][index] if index < len(st.session_state.all_data['status']) else "Active"
+                if status_text.lower() == "active":
+                    st.metric("Status", f"🟢 {status_text}")
+                elif status_text.lower() == "retired":
+                    st.metric("Status", f"🔴 {status_text}")
+                else:
+                    st.metric("Status", f"⚪ {status_text}")
+
+        st.markdown("---")
+        
+        # Measurement dan Physical Info
+        st.markdown("### Physical Information")
+        
+        col3, col4 = st.columns(2)
+        
+        with col3:
+            if index < len(st.session_state.all_data['measurement']) and st.session_state.all_data['measurement'][index]:
+                st.markdown("#### 📏 Measurements")
+                st.info(st.session_state.all_data['measurement'][index])
+        
+        with col4:
+            # Additional physical info
+            if index < len(st.session_state.all_data['size']) and st.session_state.all_data['size'][index]:
+                st.markdown("#### 📐 Size")
+                st.info(f"**{st.session_state.all_data['size'][index]}**")
+        
+        st.markdown("---")
+        
+        # Career Timeline
+        st.markdown("### Career Timeline")
+        
+        timeline_col1, timeline_col2, timeline_col3 = st.columns(3)
+        
+        with timeline_col1:
+            if index < len(st.session_state.all_data['debut_date']) and st.session_state.all_data['debut_date'][index]:
+                st.markdown("#### 🎭 Debut")
+                st.write(st.session_state.all_data['debut_date'][index])
+        
+        with timeline_col2:
+            if index < len(st.session_state.all_data['debut_period']) and st.session_state.all_data['debut_period'][index]:
+                st.markdown("#### ⏳ Experience")
+                st.write(st.session_state.all_data['debut_period'][index])
+        
+        with timeline_col3:
+            if index < len(st.session_state.all_data['retire_date']) and st.session_state.all_data['retire_date'][index]:
+                st.markdown("#### 🏁 Retire Date")
+                st.write(st.session_state.all_data['retire_date'][index])
+            else:
+                st.markdown("#### 🏁 Retire Date")
+                st.write("Still Active")
+        
+        st.markdown("---")
+        
+        # Notes/Review
+        if index < len(st.session_state.all_data['notes']) and st.session_state.all_data['notes'][index]:
+            st.markdown("### 📝 Review & Notes")
+            st.warning(st.session_state.all_data['notes'][index])
+        
+        st.markdown("---")
+        
+        # Personal Notes Section
+        st.write("### 📖 Your Personal Notes")
+        personal_notes = st.text_area(
+            "Add your own notes about this actress...", 
+            placeholder="Write your thoughts, reviews, or observations about this actress...",
+            key=f"personal_notes_{index}"
+        )
+        
+        col7, col8 = st.columns(2)
+        with col7:
+            if st.button("💾 Save Notes", use_container_width=True, key=f"save_{index}"):
+                if personal_notes:
+                    if "personal_notes" not in st.session_state:
+                        st.session_state.personal_notes = {}
+                    st.session_state.personal_notes[index] = {
+                        "name": name_text,
+                        "kanji": kanji_text,
+                        "notes": personal_notes,
+                        "image": cat_url
+                    }
+                    st.success("Notes saved successfully!")
+                else:
+                    st.warning("Please write some notes before saving!")
+        
+        with col8:
+            if st.button("Close", use_container_width=True, key=f"close_{index}"):
+                st.rerun()
+
+    with st.sidebar:
+        st.header("Filters")
+        show_active = st.checkbox("Active", value=True)
+        show_retired = st.checkbox("Retired", value=True)
+        
+        # Tampilkan personal notes jika ada
+        if "personal_notes" in st.session_state:
+            st.markdown("---")
+            st.subheader("📖 Your Notes")
+            for idx, note_data in st.session_state.personal_notes.items():
+                with st.expander(f"{note_data['name']}"):
+                    st.image(note_data['image'], width=60)
+                    st.write(note_data['notes'])
+
+    # CSS untuk styling card yang estetik
+    st.markdown("""
+    <style>
+        .cat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px 15px;
+            margin: 10px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            background: linear-gradient(135deg, #F5E5E1 0%, #f8f9fa 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            min-height: 280px;
+            width: 100%;
+            max-width: 220px;
+            cursor: pointer;
+        }
+        .cat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-color: #ff6b6b;
+        }
+        .cat-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #F5E5E1 0%, #f8f9fa 100%);
+        }
+        .cat-image {
+            border-radius: 8px;
+            object-fit: cover;
+            max-width: 150px;
+            max-height: 150px;
+            border: 2px solid #ff6b6b;
+        }
+        .cat-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: #2c3e50;
+            margin: 5px 0;
+            line-height: 1.3;
+        }
+        .cat-kanji {
+            font-size: 18px;
+            color: #e74c3c;
+            margin: 5px 0;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+        .card-divider {
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b6b, #ffa726);
+            margin: 8px 0;
+            border-radius: 2px;
+        }
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            width: 100%;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Pastikan ada gambar yang ditampilkan
+    with mid:
+        if st.session_state.pics:
+            n_rows = (N_PICS + 5 - 1) // 5
+            rows = [st.columns(5) for _ in range(n_rows)]
+            cols = [column for row in rows for column in row]
+
+            displayed_count = 0
+            
+            for i, (col, cat_url) in enumerate(zip(cols, st.session_state.pics)):
+                # Filter berdasarkan status
+                status_text = st.session_state.all_data['status'][i] if i < len(st.session_state.all_data['status']) else "Active"
+                status_lower = status_text.lower()
+                
+                if (status_lower == "active" and not show_active) or (status_lower == "retired" and not show_retired):
+                    continue
+                    
+                try:
+                    with col:
+                        name_text = st.session_state.name[i] if i < len(st.session_state.name) else ""
+                        kanji_text = st.session_state.kanji[i] if i < len(st.session_state.kanji) else ""
+                        
+                        # Buat card dengan HTML lengkap
+                        card_html = f"""
+                        <div class="card-wrapper">
+                            <div class="cat-card">
+                                <div class="cat-image-container">
+                                    <img src="{cat_url}" class="cat-image" width="150" height="150">
+                                </div>
+                                <div class="card-divider"></div>"""
+                        
+                        if name_text and kanji_text:
+                            card_html += f"""<div class="cat-name">{name_text}</div>
+                                <div class="cat-kanji">{kanji_text}</div>
+                            """
+                        elif name_text:
+                            card_html += f'<div class="cat-name">{name_text}</div>'
+                        elif kanji_text:
+                            card_html += f'<div class="cat-kanji">{kanji_text}</div>'
+                        
+                        card_html += """</div>
+                        </div>
+                        """
+                        
+                        st.markdown(card_html, unsafe_allow_html=True)
+                        
+                        # Button untuk membuka dialog
+                        if st.button("View Details", key=f"btn_{i}", use_container_width=True):
+                            show_actress_details(i)
+                        
+                        displayed_count += 1
+                            
+                except Exception as e:
+                    with col:
+                        error_html = """
+                        <div class="card-wrapper">
+                            <div class="cat-card">
+                                <div style="text-align: center; color: #e74c3c;">
+                                    <div style="font-size: 24px; margin-bottom: 10px;">😿</div>
+                                    <div style="font-size: 14px;">Gagal memuat gambar</div>
+                                </div>
+                            </div>
+                        </div>
+                        """
+                        st.markdown(error_html, unsafe_allow_html=True)
+            
+            if displayed_count == 0:
+                st.warning("No actresses match the selected filters.")
+                
+        else:
+            st.warning("Tidak ada gambar yang ditemukan di kolom 'Picture'")
 
 
 
